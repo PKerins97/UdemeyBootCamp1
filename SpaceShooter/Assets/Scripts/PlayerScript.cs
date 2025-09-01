@@ -9,6 +9,9 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private GameObject _laser;
     private float _laserOffset = 0.8f;
+    [SerializeField]
+    private float _fireRate = 0.5f;
+    private float _canFire = -1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,14 +22,12 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         HandleMovement();
-
-        Vector3 offset = new Vector3(0, _laserOffset, 0);
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
-            Instantiate(_laser, transform.position + offset, Quaternion.identity);
+            HandleFire();
         }
-
-
+        
+ 
     }
 
     void HandleMovement()
@@ -39,8 +40,6 @@ public class PlayerScript : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         transform.Translate(direction * _speed * Time.deltaTime);
 
-
-      
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.93f, 0 ),0);
 
         if (transform.position.x >= 11.31)
@@ -51,5 +50,13 @@ public class PlayerScript : MonoBehaviour
         {
             transform.position = new Vector3(11.31f, transform.position.y, 0);
         }
+    }
+
+    void HandleFire()
+    {
+        Vector3 offset = new Vector3(0, _laserOffset, 0);
+        _canFire = Time.time + _fireRate;
+        Instantiate(_laser, transform.position + offset, Quaternion.identity);
+        
     }
 }
