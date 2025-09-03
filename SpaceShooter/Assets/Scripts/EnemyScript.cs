@@ -9,7 +9,7 @@ public class EnemyScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(0, 8, 0);
+        
     }
 
     // Update is called once per frame
@@ -24,13 +24,16 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        //if other is player
-         //damage player
-        //destroy us
+       
         if(other.tag == "Player")
         {
+            PlayerScript player = other.transform.GetComponent<PlayerScript>();
+            if(player != null)
+            {
+                player.HandleDamage();
+            }
             Destroy(this.gameObject);
         }
 
@@ -39,8 +42,5 @@ public class EnemyScript : MonoBehaviour
             Destroy(other.gameObject);
             Destroy(this.gameObject);
         }
-        //if other is laser
-        //destroy us
-        //Destroy laser
     }
 }
