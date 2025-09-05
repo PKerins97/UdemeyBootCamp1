@@ -354,7 +354,9 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.13f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/EnemyScript.cs"
 "Assets/Scripts/LaserScript.cs"
+"Assets/Scripts/ManagerScript.cs"
 "Assets/Scripts/PlayerScript.cs"
+"Assets/Scripts/PowerupScript.cs"
 -langversion:9.0
 
 /deterministic

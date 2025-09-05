@@ -7,18 +7,20 @@ public class PowerupScript : MonoBehaviour
     [SerializeField]
     private float _speed = 3f;
     private PlayerScript _player;
+
+    //ID for powerups
+    [SerializeField] //0 = triple shot, 1 = Speed, 2 = Shield
+    private int powerupID;
         // Start is called before the first frame update
     void Start()
     {
-      transform.position =  new Vector3(0, 6f, 0);
         _player = GameObject.Find("Player").GetComponent<PlayerScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //move down at speed of three (adjust in inspector)
-        //destroy when leave the screen
+        
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
         if(transform.position.y < -6)
         {
@@ -27,15 +29,42 @@ public class PowerupScript : MonoBehaviour
 
     }
 
-    //On trig collision
-    //collected by player
-    //on collection destroy
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Player")
         {
-            //communicate with player script 
-            _player.TripleShotActive();
+           if(powerupID == 0) 
+            {
+                _player.TripleShotActive();
+            }
+           else if(powerupID == 1)
+            {
+                _player.SpeedUpActive();
+            }
+           else if (powerupID ==2)
+            {
+                Debug.Log("Sheild");
+            }
+            
+           switch(powerupID)
+            {
+                case 0:
+                    _player.TripleShotActive();
+                    break;
+
+                case 1:
+                    _player.SpeedUpActive();
+                    break;
+
+                case 2:
+                    Debug.Log("Shield Collected");
+                    break;
+
+                default:
+                    Debug.Log("Default");
+                    break;
+            }
             Destroy(this.gameObject);
         }
     }

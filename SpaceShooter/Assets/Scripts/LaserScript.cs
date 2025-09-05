@@ -11,8 +11,12 @@ public class LaserScript : MonoBehaviour
     {
         transform.Translate(Vector3.up * _laserSpeed * Time.deltaTime);
 
-        if(transform.position.y >= 8.57)
+        if(transform.position.y >= 8.57f)
         {
+            if (transform.parent != null)
+            {
+                Destroy(transform.parent.gameObject);
+            }
             Destroy(this.gameObject);
         }
     }

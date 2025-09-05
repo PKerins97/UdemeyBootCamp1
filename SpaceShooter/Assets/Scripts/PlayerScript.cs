@@ -7,6 +7,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private float _speed = 3.5f;
     [SerializeField]
+    private float _powerSpeed = 8.0f;
+    [SerializeField]
     private GameObject _laser;
     [SerializeField]
     private GameObject _tripleShotPrefab;
@@ -20,6 +22,8 @@ public class PlayerScript : MonoBehaviour
     
     [SerializeField]
     private bool _isTripleShotActive = false;
+    [SerializeField]
+    private bool _isSpeedUpActive = false;
 
     // Start is called before the first frame update
     void Start()
@@ -54,8 +58,14 @@ public class PlayerScript : MonoBehaviour
         //transform.Translate(Vector3.right * horizontalInput * _speed * Time.deltaTime);
         //transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        transform.Translate(direction * _speed * Time.deltaTime);
-
+        if (_isSpeedUpActive == true)
+        {
+            transform.Translate(direction * _powerSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(direction * _speed * Time.deltaTime);
+        }
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.93f, 0 ),0);
 
         if (transform.position.x >= 11.31)
@@ -72,10 +82,7 @@ public class PlayerScript : MonoBehaviour
     {
         Vector3 offset = new Vector3(0, _laserOffset, 0);
         _canFire = Time.time + _fireRate;
-        
-        //if space key pressed fire 1 laser
-        //if triple is active = true
-        //fire 3 
+       
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (_isTripleShotActive == true)
@@ -86,9 +93,7 @@ public class PlayerScript : MonoBehaviour
             else
                 Instantiate(_laser, transform.position + offset, Quaternion.identity);
         }
-        //else
-        //fire 1
-
+        
     }
 
     public void HandleDamage()
@@ -104,10 +109,15 @@ public class PlayerScript : MonoBehaviour
 
    public void TripleShotActive()
     {
-        //tripleShotActive
-        //start power down coroutine
         _isTripleShotActive = true;
         StartCoroutine(TripleShotPowerDownRoutine());
+
+    }
+
+    public void SpeedUpActive()
+    {
+        _isSpeedUpActive = true;
+        StartCoroutine(SpeedPowerDownRoutine());
 
     }
     IEnumerator TripleShotPowerDownRoutine()
@@ -115,7 +125,10 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         _isTripleShotActive = false;
     }
-    //IENumerator TripleShotPowerDownRoutine
-    //wait 5
-    //set triple to false
+    
+    IEnumerator SpeedPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(10.0f);
+        _isSpeedUpActive = false;
+    }
 }
