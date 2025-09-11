@@ -34,19 +34,7 @@ public class PowerupScript : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-           if(powerupID == 0) 
-            {
-                _player.TripleShotActive();
-            }
-           else if(powerupID == 1)
-            {
-                _player.SpeedUpActive();
-            }
-           else if (powerupID ==2)
-            {
-                Debug.Log("Sheild");
-            }
-            
+                   
            switch(powerupID)
             {
                 case 0:
@@ -58,7 +46,7 @@ public class PowerupScript : MonoBehaviour
                     break;
 
                 case 2:
-                    Debug.Log("Shield Collected");
+                    _player.ShieldActive(); ;
                     break;
 
                 default:

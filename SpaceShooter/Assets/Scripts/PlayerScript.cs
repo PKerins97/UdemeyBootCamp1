@@ -11,6 +11,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private GameObject _laser;
     [SerializeField]
+    private GameObject _shield;
+    [SerializeField]
     private GameObject _tripleShotPrefab;
     private float _laserOffset = 1.05f;
     [SerializeField]
@@ -18,23 +20,36 @@ public class PlayerScript : MonoBehaviour
     private float _canFire = -1f;
     [SerializeField]
     private int _lives = 3;
-    private ManagerScript _manager;
+    private ManagerScript _spawnmanager;
+    private UIManager _uimanager;
     
     [SerializeField]
     private bool _isTripleShotActive = false;
+
     [SerializeField]
     private bool _isSpeedUpActive = false;
 
+    [SerializeField]
+    private bool _isShieldActive = false;
+    
+    [SerializeField]
+    private int _score;
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);
-        _manager = GameObject.Find("Manager").GetComponent<ManagerScript>();
-        
+        _spawnmanager = GameObject.Find("Spawn_Manager").GetComponent<ManagerScript>();
+        _uimanager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
-        if (_manager == null)
+
+        if (_spawnmanager == null)
         {
-            Debug.Log("No Manager got");
+            Debug.Log("No Spawn Manager got");
+        }
+
+        if (_uimanager == null)
+        {
+            Debug.Log("No UI Manager");
         }
     }
 
@@ -98,11 +113,20 @@ public class PlayerScript : MonoBehaviour
 
     public void HandleDamage()
     {
+       
+        if(_isShieldActive == true)
+        {
+            _isShieldActive = false;
+            _shield.SetActive(false);
+            return;
+        }
         _lives -= 1;
+        _uimanager.UpdateLives(_lives);
 
         if(_lives < 1)
         {
-            _manager.OnPlayerDeath();
+            _spawnmanager.OnPlayerDeath();
+            
             Destroy(this.gameObject);
         }
     }
@@ -120,6 +144,13 @@ public class PlayerScript : MonoBehaviour
         StartCoroutine(SpeedPowerDownRoutine());
 
     }
+
+    public void ShieldActive()
+    {
+        _isShieldActive = true;
+        _shield.SetActive(true); 
+    }
+
     IEnumerator TripleShotPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
@@ -130,5 +161,12 @@ public class PlayerScript : MonoBehaviour
     {
         yield return new WaitForSeconds(10.0f);
         _isSpeedUpActive = false;
+    }
+
+    public void AddScore(int points)
+    {
+        _score += points;
+        _uimanager.UpdateScoreUI(_score);
+        
     }
 }
