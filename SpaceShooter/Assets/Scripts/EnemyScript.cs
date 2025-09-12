@@ -8,10 +8,25 @@ public class EnemyScript : MonoBehaviour
     private float _speed = 4f;
 
     private PlayerScript _player;
+
+    //get handle for animator
+    [SerializeField]
+    private Animator _anim;
     // Start is called before the first frame update
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<PlayerScript>();
+        //null check 
+        if(_player == null)
+        {
+            Debug.LogError("No Player Found");
+        }
+        _anim = GetComponent<Animator>();
+        if(_anim == null)
+        {
+            Debug.LogError("animator not found");
+        }
+        //assign component to anim
     }
 
     // Update is called once per frame
@@ -35,8 +50,12 @@ public class EnemyScript : MonoBehaviour
             if(_player != null)
             {
                 _player.HandleDamage();
+                
             }
-            Destroy(this.gameObject);
+            //trigger anim
+            _anim.SetTrigger("OnEnemyDeath");
+            _speed = 0;
+            Destroy(this.gameObject, 2.8f);
         }
 
         if (other.tag == "Laser")
@@ -44,11 +63,13 @@ public class EnemyScript : MonoBehaviour
             Destroy(other.gameObject);
             if (_player != null)
             {
-                
                 _player.AddScore(10);
-                
+  
             }
-            Destroy(this.gameObject);
+            //trigger anim
+            _anim.SetTrigger("OnEnemyDeath");
+            _speed = 0;
+            Destroy(this.gameObject, 2.8f);
         }
     }
 }
