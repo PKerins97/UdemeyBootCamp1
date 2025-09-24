@@ -7,7 +7,8 @@ public class PowerupScript : MonoBehaviour
     [SerializeField]
     private float _speed = 3f;
     private PlayerScript _player;
-
+    [SerializeField]
+    private AudioClip _powerUpClip;
     //ID for powerups
     [SerializeField] //0 = triple shot, 1 = Speed, 2 = Shield
     private int powerupID;
@@ -34,8 +35,8 @@ public class PowerupScript : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-                   
-           switch(powerupID)
+            AudioSource.PlayClipAtPoint(_powerUpClip, transform.position);
+            switch (powerupID)
             {
                 case 0:
                     _player.TripleShotActive();

@@ -14,6 +14,10 @@ public class PlayerScript : MonoBehaviour
     private GameObject _shield;
     [SerializeField]
     private GameObject _tripleShotPrefab;
+    [SerializeField]
+    private GameObject _engineRight;
+    [SerializeField]
+    private GameObject _engineLeft;
     private float _laserOffset = 1.05f;
     [SerializeField]
     private float _fireRate = 0.5f;
@@ -34,14 +38,20 @@ public class PlayerScript : MonoBehaviour
     
     [SerializeField]
     private int _score;
+
+    [SerializeField]
+    private AudioClip _laser_clip;
+    
+    private AudioSource _audioSource;
+    private AudioManager _audioManager;
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);
         _spawnmanager = GameObject.Find("Spawn_Manager").GetComponent<ManagerScript>();
         _uimanager = GameObject.Find("Canvas").GetComponent<UIManager>();
-
-
+        _audioSource = GetComponent<AudioSource>();
+        _audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         if (_spawnmanager == null)
         {
             Debug.Log("No Spawn Manager got");
@@ -50,6 +60,19 @@ public class PlayerScript : MonoBehaviour
         if (_uimanager == null)
         {
             Debug.Log("No UI Manager");
+        }
+        if (_audioSource == null)
+        {
+            Debug.LogError("Audio Source is null on Player");
+        }
+        else
+        {
+            _audioSource.clip = _laser_clip;
+        }
+
+        if(_audioManager == null)
+        {
+            Debug.LogError("No AUDIO MANAGER found");
         }
     }
 
@@ -108,7 +131,8 @@ public class PlayerScript : MonoBehaviour
             else
                 Instantiate(_laser, transform.position + offset, Quaternion.identity);
         }
-        
+        //play audio clip
+        _audioSource.Play();
     }
 
     public void HandleDamage()
@@ -121,12 +145,20 @@ public class PlayerScript : MonoBehaviour
             return;
         }
         _lives -= 1;
+        if(_lives == 2)
+        {
+            _engineLeft.SetActive(true);
+        }
+        else if(_lives == 1)
+        {
+            _engineRight.SetActive(true);
+        }
         _uimanager.UpdateLives(_lives);
 
         if(_lives < 1)
         {
             _spawnmanager.OnPlayerDeath();
-            
+            _audioManager.ExplosionSound();
             Destroy(this.gameObject);
         }
     }

@@ -18,8 +18,7 @@ public class ManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      StartCoroutine(SpawnEnemyRoutine());
-      StartCoroutine(SpawnPowerupRoutine());
+      
       
     }
 
@@ -30,11 +29,15 @@ public class ManagerScript : MonoBehaviour
     {
         
     }
-    
+    public void StartSpawning()
+    {
+        StartCoroutine(SpawnEnemyRoutine());
+        StartCoroutine(SpawnPowerupRoutine());
+    }
 
     IEnumerator SpawnEnemyRoutine()
     {
-        
+        yield return new WaitForSeconds(3.0f);
         while (_stopSpawining == false)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7, 0);
@@ -47,6 +50,7 @@ public class ManagerScript : MonoBehaviour
     IEnumerator SpawnPowerupRoutine()
     {
         //every 3 to 7 spawn a power up
+        yield return new WaitForSeconds(3.0f);
         while (_stopSpawining == false)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7, 0);

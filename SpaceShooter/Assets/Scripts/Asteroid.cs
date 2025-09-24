@@ -8,10 +8,21 @@ public class Asteroid : MonoBehaviour
     private float _rotationspeed = 19f;
     [SerializeField]
     private GameObject _explosionPrefab;
+    private ManagerScript _spawnManager;
+    private AudioManager _audioManager;
     // Start is called before the first frame update
     void Start()
     {
-        
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<ManagerScript>();
+        _audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+        if(_spawnManager == null)
+        {
+            Debug.LogError("No Spawn Manager found");
+        }
+        if(_audioManager == null)
+        {
+            Debug.LogError("no Audio Manager Found on Astroid");
+        }
     }
 
     // Update is called once per frame
@@ -27,10 +38,13 @@ public class Asteroid : MonoBehaviour
     {
         if(other.tag == "Laser")
         {
-            
-            Destroy(other.gameObject);
-            Destroy(this.gameObject, 0.25f);
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            _audioManager.ExplosionSound();
+            Destroy(this.gameObject, 0.25f);
+            _spawnManager.StartSpawning();
+            
+            
             
         }
     }
